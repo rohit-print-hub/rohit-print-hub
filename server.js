@@ -25,6 +25,11 @@ fs.mkdirSync(queueFolder, { recursive: true });
 app.use(express.static(path.join(__dirname, "Public")));
 app.use(express.json());
 
+// Yeh wali line add karni hai:
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
+
 
 // ===============================
 // FILE UPLOAD
