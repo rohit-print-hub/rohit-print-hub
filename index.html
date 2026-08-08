@@ -4,37 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rohit Auto Print Hub</title>
-
-    <!-- ============================= -->
-    <!-- LOADER & UI CSS -->
-    <!-- ============================= -->
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f4f7f6;
             margin: 0;
             padding: 20px;
         }
 
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
         .logo {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         .logo h1 {
             color: #071952;
             margin-bottom: 5px;
+            font-size: 26px;
+        }
+
+        .logo p {
+            color: #555;
+            margin: 0;
+            font-size: 14px;
         }
 
         .option, .upload-box {
             background: white;
-            padding: 15px;
+            padding: 16px;
             margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .option label, .upload-box h3 {
@@ -42,30 +51,38 @@
             margin-bottom: 8px;
             color: #071952;
             font-weight: bold;
+            font-size: 15px;
         }
 
-        .option select, .option input[type="number"] {
+        .option select, .option input[type="number"], .upload-box input[type="file"] {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            background: #fafafa;
+        }
+
+        .option select:focus, .option input:focus {
+            border-color: #0B666A;
+            background: #fff;
         }
 
         button#printBtn {
             display: block;
             width: 100%;
-            max-width: 530px;
-            margin: 20px auto;
+            margin: 20px 0;
             padding: 15px;
             background: #0B666A;
             color: white;
             font-size: 18px;
             font-weight: bold;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
             box-shadow: 0 5px 15px rgba(11, 102, 106, 0.3);
+            transition: background 0.2s;
         }
 
         button#printBtn:hover {
@@ -75,9 +92,7 @@
         .print-status-box {
             display: none;
             width: 100%;
-            max-width: 530px;
-            box-sizing: border-box;
-            margin: 25px auto;
+            margin: 25px 0;
             padding: 35px 20px;
             border-radius: 22px;
             background: linear-gradient(135deg, #071952, #172554);
@@ -87,12 +102,12 @@
         }
 
         #processingScreen h2 {
-            font-size: 30px;
+            font-size: 26px;
             margin: 5px 0 10px;
         }
 
         .processing-subtitle {
-            font-size: 16px;
+            font-size: 15px;
             opacity: 0.85;
         }
 
@@ -146,10 +161,10 @@
 
         .processing-message {
             display: inline-block;
-            padding: 13px 25px;
+            padding: 12px 22px;
             border-radius: 30px;
             background: rgba(255,255,255,0.10);
-            font-size: 18px;
+            font-size: 16px;
         }
 
         @keyframes loaderRotate {
@@ -186,7 +201,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 65px;
+            font-size: 60px;
             font-weight: bold;
             background: #22c55e;
             box-shadow: 0 0 35px rgba(34,197,94,0.7);
@@ -197,34 +212,34 @@
             position: absolute;
             right: -5px;
             top: -10px;
-            font-size: 42px;
+            font-size: 38px;
             animation: confettiPop 0.8s ease;
         }
 
         .success-title {
-            font-size: 38px;
+            font-size: 32px;
             margin: 10px 0;
             color: #4ade80;
             animation: successText 0.7s ease;
         }
 
         .success-message {
-            font-size: 18px;
+            font-size: 16px;
             opacity: 0.95;
         }
 
         .thank-you-box {
-            max-width: 500px;
-            margin: 22px auto;
-            padding: 17px;
-            border-radius: 14px;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 12px;
             background: rgba(255,255,255,0.09);
-            font-size: 17px;
+            font-size: 16px;
         }
 
         .party-emojis {
-            font-size: 35px;
-            letter-spacing: 8px;
+            font-size: 30px;
+            letter-spacing: 6px;
             animation: partyBounce 0.8s infinite alternate;
         }
 
@@ -247,128 +262,128 @@
 
         @keyframes partyBounce {
             from { transform: translateY(0); }
-            to { transform: translateY(-8px); }
+            to { transform: translateY(-6px); }
         }
 
         .footer {
             text-align: center;
-            margin-top: 30px;
+            margin-top: 25px;
             color: #666;
-            font-size: 14px;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
-    <div class="logo">
-        <h1>🖨️ Rohit Auto Print Hub</h1>
-        <p>Fast • Easy • Automatic Printing</p>
-    </div>
+    <div class="container">
+        <div class="logo">
+            <h1>🖨️ Rohit Auto Print Hub</h1>
+            <p>Fast • Easy • Automatic Printing</p>
+        </div>
 
-    <!-- Document Type Dropdown -->
-    <div class="option">
-        <label>Document Type</label>
-        <select id="docType" onchange="checkDocType()">
-            <option value="Normal">📄 Full Page (Normal PDF/Photo)</option>
-            <option value="PAN">💳 PAN / Voter ID (Single Side Card)</option>
-            <option value="[Aadhaar Redacted]">🪪 Card (Front & Back)</option>
-        </select>
-    </div>
+        <!-- Document Type Dropdown -->
+        <div class="option">
+            <label>Document Type</label>
+            <select id="docType" onchange="checkDocType()">
+                <option value="Normal">📄 Full Page (Normal PDF/Photo)</option>
+                <option value="PAN">💳 PAN / Voter ID (Single Side Card)</option>
+                <option value="[Aadhaar Redacted]">🪪 Card (Front & Back)</option>
+            </select>
+        </div>
 
-    <div class="upload-box">
-        <h3>Select File (Front)</h3>
-        <input type="file" id="fileFront" accept=".pdf,.jpg,.jpeg,.png">
+        <div class="upload-box">
+            <h3>Select File (Front)</h3>
+            <input type="file" id="fileFront" accept=".pdf,.jpg,.jpeg,.png">
 
-        <div id="backUploadDiv" style="display: none; margin-top: 15px;">
-            <h3>Select File (Back)</h3>
-            <input type="file" id="fileBack" accept=".jpg,.jpeg,.png">
+            <div id="backUploadDiv" style="display: none; margin-top: 15px;">
+                <h3>Select File (Back)</h3>
+                <input type="file" id="fileBack" accept=".jpg,.jpeg,.png">
+            </div>
+        </div>
+
+        <!-- Print Type -->
+        <div class="option">
+            <label>Print Type</label>
+            <select id="printType" onchange="calculateTotal()">
+                <option value="Black">⚫ Black & White (₹10)</option>
+                <option value="Color">🌈 Color (₹20)</option>
+            </select>
+        </div>
+
+        <!-- Paper Size -->
+        <div class="option">
+            <label>Paper Size</label>
+            <select id="paperSize">
+                <option value="A4">A4</option>
+                <option value="A3">A3</option>
+            </select>
+        </div>
+
+        <!-- Print Side -->
+        <div class="option">
+            <label>Print Side</label>
+            <select id="side" onchange="calculateTotal()">
+                <option value="Single">Single Side</option>
+                <option value="Double">Double Side (+₹5)</option>
+            </select>
+        </div>
+
+        <!-- Copies -->
+        <div class="option">
+            <label>Copies</label>
+            <input type="number" id="copies" value="1" min="1" oninput="calculateTotal()">
+        </div>
+
+        <!-- Total Amount -->
+        <div class="option" style="background: #f0f4f8; text-align: center;">
+            <h3 style="color: #071952; margin-bottom: 5px;">Total Amount</h3>
+            <span id="totalPrice" style="font-size: 24px; font-weight: bold; color: #0B666A;">₹10</span>
+        </div>
+
+        <!-- PRINT BUTTON -->
+        <button id="printBtn">🖨️ PRINT NOW</button>
+
+        <!-- PRINT PROCESSING / SUCCESS BOX -->
+        <div id="printStatusBox" class="print-status-box">
+            <!-- PROCESSING SCREEN -->
+            <div id="processingScreen">
+                <h2>Preparing Your Print...</h2>
+                <p class="processing-subtitle">Please wait while your document is being sent to the printer.</p>
+                
+                <div class="game-loader">
+                    <div class="loader-ring"></div>
+                    <div class="loader-ball ball1"></div>
+                    <div class="loader-ball ball2"></div>
+                    <div class="loader-ball ball3"></div>
+                    <div class="loader-printer">🖨️</div>
+                </div>
+
+                <div class="processing-message">🔄 Sending to printer...</div>
+            </div>
+
+            <!-- SUCCESS SCREEN -->
+            <div id="successScreen">
+                <div class="success-animation">
+                    <div class="success-circle">✓</div>
+                    <div class="success-confetti">🎉</div>
+                </div>
+                <h2 class="success-title">🎉 PRINT SUCCESS!</h2>
+                <p class="success-message">Your document has been sent to the printer successfully.</p>
+                <div class="thank-you-box">
+                    🖨️ Thank you for using <strong>Rohit Auto Print Hub</strong>
+                </div>
+                <div class="party-emojis">🎊 🎉 🥳 🎉 🎊</div>
+            </div>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="footer">
+            Powered By Rohit Auto Hub
         </div>
     </div>
 
-    <!-- Print Type -->
-    <div class="option">
-        <label>Print Type</label>
-        <select id="printType" onchange="calculateTotal()">
-            <option value="Black">⚫ Black & White (₹10)</option>
-            <option value="Color">🌈 Color (₹20)</option>
-        </select>
-    </div>
-
-    <!-- Paper Size -->
-    <div class="option">
-        <label>Paper Size</label>
-        <select id="paperSize">
-            <option value="A4">A4</option>
-            <option value="A3">A3</option>
-        </select>
-    </div>
-
-    <!-- Print Side -->
-    <div class="option">
-        <label>Print Side</label>
-        <select id="side" onchange="calculateTotal()">
-            <option value="Single">Single Side</option>
-            <option value="Double">Double Side (+₹5)</option>
-        </select>
-    </div>
-
-    <!-- Copies -->
-    <div class="option">
-        <label>Copies</label>
-        <input type="number" id="copies" value="1" min="1" oninput="calculateTotal()">
-    </div>
-
-    <!-- Total Amount -->
-    <div class="option" style="background: #f0f4f8; padding: 12px; border-radius: 8px; text-align: center; max-width: 500px; margin: 0 auto 15px;">
-        <h3 style="color: #071952; margin-bottom: 5px;">Total Amount</h3>
-        <span id="totalPrice" style="font-size: 24px; font-weight: bold; color: #0B666A;">₹10</span>
-    </div>
-
-    <!-- PRINT BUTTON -->
-    <button id="printBtn">🖨️ PRINT NOW</button>
-
-    <!-- PRINT PROCESSING / SUCCESS BOX -->
-    <div id="printStatusBox" class="print-status-box">
-        <!-- PROCESSING SCREEN -->
-        <div id="processingScreen">
-            <h2>Preparing Your Print...</h2>
-            <p class="processing-subtitle">Please wait while your document is being sent to the printer.</p>
-            
-            <div class="game-loader">
-                <div class="loader-ring"></div>
-                <div class="loader-ball ball1"></div>
-                <div class="loader-ball ball2"></div>
-                <div class="loader-ball ball3"></div>
-                <div class="loader-printer">🖨️</div>
-            </div>
-
-            <div class="processing-message">🔄 Sending to printer...</div>
-        </div>
-
-        <!-- SUCCESS SCREEN -->
-        <div id="successScreen">
-            <div class="success-animation">
-                <div class="success-circle">✓</div>
-                <div class="success-confetti">🎉</div>
-            </div>
-            <h2 class="success-title">🎉 PRINT SUCCESS!</h2>
-            <p class="success-message">Your document has been sent to the printer successfully.</p>
-            <div class="thank-you-box">
-                🖨️ Thank you for using <strong>Rohit Auto Print Hub</strong>
-            </div>
-            <div class="party-emojis">🎊 🎉 🥳 🎉 🎊</div>
-        </div>
-    </div>
-
-    <div class="status" id="status"></div>
-
-    <div class="footer">
-        Powered By Rohit Auto Hub
-    </div>
-
-    <!-- ============================= -->
     <!-- JAVASCRIPT LOGIC -->
-    <!-- ============================= -->
     <script>
         function checkDocType() {
             const docType = document.getElementById("docType").value;
