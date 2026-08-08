@@ -549,6 +549,96 @@
     }
 
 }
+<script>
+    // Document Type change hone par Back side upload box dikhane ya chupane ke liye
+function checkDocType() {
+    const docType = document.getElementById("docType").value;
+    const backUploadDiv = document.getElementById("backUploadDiv");
 
+    if (docType === "[Aadhaar Redacted]") {
+        backUploadDiv.style.display = "block"; // Card ke liye front aur back dono chahiye
+    } else {
+        backUploadDiv.style.display = "none";
+    }
+    calculateTotal();
+}
+
+// Total price calculate karne ka function
+function calculateTotal() {
+    const printType = document.getElementById("printType").value;
+    const side = document.getElementById("side").value;
+    const copies = parseInt(document.getElementById("copies").value) || 1;
+
+    let basePrice = printType === "Color" ? 20 : 10;
+    
+    if (side === "Double") {
+        basePrice += 5; // Double side par ₹5 extra
+    }
+
+    let totalPrice = basePrice * copies;
+    document.getElementById("totalPrice").innerText = "₹" + totalPrice;
+}
+
+// PRINT NOW button click event
+document.getElementById("printBtn").addEventListener("click", async () => {
+    const fileFrontInput = document.getElementById("fileFront");
+    const fileBackInput = document.getElementById("fileBack");
+    const statusDiv = document.getElementById("status");
+    const statusBox = document.getElementById("printStatusBox");
+    const processingScreen = document.getElementById("processingScreen");
+    const successScreen = document.getElementById("successScreen");
+
+    if (fileFrontInput.files.length === 0) {
+        alert("❌ Kripya pehle Front file select karein!");
+        return;
+    }
+
+    // Status box dikhayein aur processing screen shuru karein
+    statusBox.style.display = "block";
+    processingScreen.style.display = "block";
+    successScreen.style.display = "none";
+
+    const formData = new FormData();
+    formData.append("fileFront", fileFrontInput.files[0]);
+    
+    if (fileBackInput.files.length > 0) {
+        formData.append("fileBack", fileBackInput.files[0]);
+    }
+
+    formData.append("docType", document.getElementById("docType").value);
+    formData.append("printType", document.getElementById("printType").value);
+    formData.append("paperSize", document.getElementById("paperSize").value);
+    formData.append("side", document.getElementById("side").value);
+    formData.append("copies", document.getElementById("copies").value);
+    formData.append("shopId", "default_shop"); // Apni zaroorat ke hisaab se shopId badal sakte hain
+
+    try {
+        const response = await fetch("/upload", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            // Thoda sa delay dekar success screen dikhayein taaki animation acchi lage
+            setTimeout(() => {
+                processingScreen.style.display = "none";
+                successScreen.style.display = "block";
+            }, 1500);
+        } else {
+            processingScreen.style.display = "none";
+            statusBox.style.display = "none";
+            alert("❌ Print error: " + result.message);
+        }
+    } catch (error) {
+        console.error(error);
+        processingScreen.style.display = "none";
+        statusBox.style.display = "none";
+        alert("❌ Server se connect karne me samasya aayi!");
+    }
+});
+</script>
+    
 </style>
 
