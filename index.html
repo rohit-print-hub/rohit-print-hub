@@ -1,644 +1,457 @@
-
-<div class="logo">
-    <h1>🖨️ Rohit Auto Print Hub</h1>
-    <p>Fast • Easy • Automatic Printing</p>
-</div>
-
-<!-- Document Type Dropdown -->
-<div class="option">
-    <label>Document Type</label>
-    <select id="docType" onchange="checkDocType()">
-        <option value="Normal">📄 Full Page (Normal PDF/Photo)</option>
-        <option value="PAN">💳 PAN / Voter ID (Single Side Card)</option>
-        <option value="[Aadhaar Redacted]">🪪 Card (Front & Back)</option>
-    </select>
-</div>
-
-<div class="upload-box">
-    <h3>Select File (Front)</h3>
-    <input type="file" id="fileFront" accept=".pdf,.jpg,.jpeg,.png">
-
-    <div id="backUploadDiv" style="display: none; margin-top: 15px;">
-        <h3>Select File (Back)</h3>
-        <input type="file" id="fileBack" accept=".jpg,.jpeg,.png">
-    </div>
-</div>
-
-<!-- Print Type -->
-<div class="option">
-    <label>Print Type</label>
-    <select id="printType" onchange="calculateTotal()">
-        <option value="Black">⚫ Black & White (₹10)</option>
-        <option value="Color">🌈 Color (₹20)</option>
-    </select>
-</div>
-
-<!-- Paper Size -->
-<div class="option">
-    <label>Paper Size</label>
-    <select id="paperSize">
-        <option value="A4">A4</option>
-        <option value="A3">A3</option>
-    </select>
-</div>
-
-<!-- Print Side -->
-<div class="option">
-    <label>Print Side</label>
-    <select id="side" onchange="calculateTotal()">
-        <option value="Single">Single Side</option>
-        <option value="Double">Double Side (+₹5)</option>
-    </select>
-</div>
-
-<!-- Copies -->
-<div class="option">
-    <label>Copies</label>
-    <input
-        type="number"
-        id="copies"
-        value="1"
-        min="1"
-        oninput="calculateTotal()"
-    >
-</div>
-
-<!-- Total Amount -->
-<div
-    class="option"
-    style="
-        background: #f0f4f8;
-        padding: 12px;
-        border-radius: 8px;
-        text-align: center;
-    "
->
-    <h3 style="color: #071952; margin-bottom: 5px;">
-        Total Amount
-    </h3>
-
-    <span
-        id="totalPrice"
-        style="
-            font-size: 24px;
-            font-weight: bold;
-            color: #0B666A;
-        "
-    >
-        ₹10
-    </span>
-</div>
-
-<!-- PRINT BUTTON -->
-<button id="printBtn">
-    🖨️ PRINT NOW
-</button>
-
-
-<!-- ============================= -->
-<!-- PRINT PROCESSING / SUCCESS BOX -->
-<!-- ============================= -->
-
-<div id="printStatusBox" class="print-status-box">
-
-    <!-- PROCESSING SCREEN -->
-    <div id="processingScreen">
-
-        <h2>Preparing Your Print...</h2>
-
-        <p class="processing-subtitle">
-            Please wait while your document is being sent to the printer.
-        </p>
-
-        <!-- BIG GAME STYLE LOADER -->
-        <div class="game-loader">
-
-            <div class="loader-ring"></div>
-
-            <div class="loader-ball ball1"></div>
-            <div class="loader-ball ball2"></div>
-            <div class="loader-ball ball3"></div>
-
-            <div class="loader-printer">
-                🖨️
-            </div>
-
-        </div>
-
-        <div class="processing-message">
-            🔄 Sending to printer...
-        </div>
-
-    </div>
-
-
-    <!-- SUCCESS SCREEN -->
-    <div id="successScreen">
-
-        <div class="success-animation">
-
-            <div class="success-circle">
-                ✓
-            </div>
-
-            <div class="success-confetti">
-                🎉
-            </div>
-
-        </div>
-
-        <h2 class="success-title">
-            🎉 PRINT SUCCESS!
-        </h2>
-
-        <p class="success-message">
-            Your document has been sent to the printer successfully.
-        </p>
-
-        <div class="thank-you-box">
-            🖨️ Thank you for using
-            <strong>Rohit Auto Print Hub</strong>
-        </div>
-
-        <div class="party-emojis">
-            🎊 🎉 🥳 🎉 🎊
-        </div>
-
-    </div>
-
-</div>
-
-
-<div class="status" id="status"></div>
-
-<div class="footer">
-    Powered By Rohit Auto Hub
-</div>
-
-
-<!-- ============================= -->
-<!-- LOADER CSS -->
-<!-- ============================= -->
-
-<style>
-
-.print-status-box {
-    display: none;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 25px auto;
-    padding: 35px 20px;
-    border-radius: 22px;
-
-    background: linear-gradient(
-        135deg,
-        #071952,
-        #172554
-    );
-
-    color: white;
-    text-align: center;
-
-    box-shadow:
-        0 15px 40px rgba(0,0,0,0.20);
-}
-
-
-/* PROCESSING */
-
-#processingScreen h2 {
-    font-size: 30px;
-    margin: 5px 0 10px;
-}
-
-.processing-subtitle {
-    font-size: 16px;
-    opacity: 0.85;
-}
-
-
-/* BIG GAME LOADER */
-
-.game-loader {
-    position: relative;
-    width: 170px;
-    height: 170px;
-    margin: 30px auto;
-}
-
-
-/* OUTER RING */
-
-.loader-ring {
-    position: absolute;
-
-    width: 145px;
-    height: 145px;
-
-    top: 12px;
-    left: 12px;
-
-    border-radius: 50%;
-
-    border: 8px solid rgba(255,255,255,0.12);
-
-    border-top-color: #00e5ff;
-    border-right-color: #7c3aed;
-
-    animation:
-        loaderRotate
-        1.1s
-        linear
-        infinite;
-
-    box-shadow:
-        0 0 25px rgba(0,229,255,0.4);
-}
-
-
-/* MOVING BALLS */
-
-.loader-ball {
-    position: absolute;
-
-    width: 18px;
-    height: 18px;
-
-    border-radius: 50%;
-
-    animation:
-        ballMove
-        1.5s
-        linear
-        infinite;
-}
-
-.ball1 {
-    background: #00e5ff;
-}
-
-.ball2 {
-    background: #a855f7;
-    animation-delay: 0.5s;
-}
-
-.ball3 {
-    background: #22c55e;
-    animation-delay: 1s;
-}
-
-
-/* CENTER PRINTER */
-
-.loader-printer {
-    position: absolute;
-
-    width: 70px;
-    height: 70px;
-
-    left: 50px;
-    top: 50px;
-
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 38px;
-
-    background: rgba(255,255,255,0.10);
-
-    animation:
-        printerPulse
-        1s
-        ease-in-out
-        infinite;
-}
-
-
-/* PROCESSING MESSAGE */
-
-.processing-message {
-    display: inline-block;
-
-    padding: 13px 25px;
-
-    border-radius: 30px;
-
-    background: rgba(255,255,255,0.10);
-
-    font-size: 18px;
-}
-
-
-/* ANIMATIONS */
-
-@keyframes loaderRotate {
-
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-
-}
-
-
-@keyframes printerPulse {
-
-    0%,100% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.15);
-    }
-
-}
-
-
-@keyframes ballMove {
-
-    0% {
-        transform:
-            rotate(0deg)
-            translateX(70px);
-    }
-
-    100% {
-        transform:
-            rotate(360deg)
-            translateX(70px);
-    }
-
-}
-
-
-/* ============================= */
-/* SUCCESS */
-/* ============================= */
-
-#successScreen {
-    display: none;
-}
-
-
-.success-animation {
-    position: relative;
-
-    width: 120px;
-    height: 120px;
-
-    margin: 0 auto 15px;
-}
-
-
-.success-circle {
-    width: 105px;
-    height: 105px;
-
-    border-radius: 50%;
-
-    margin: auto;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 65px;
-    font-weight: bold;
-
-    background: #22c55e;
-
-    box-shadow:
-        0 0 35px
-        rgba(34,197,94,0.7);
-
-    animation:
-        successPop
-        0.6s
-        ease;
-}
-
-
-.success-confetti {
-    position: absolute;
-
-    right: -5px;
-    top: -10px;
-
-    font-size: 42px;
-
-    animation:
-        confettiPop
-        0.8s
-        ease;
-}
-
-
-.success-title {
-    font-size: 38px;
-    margin: 10px 0;
-
-    color: #4ade80;
-
-    animation:
-        successText
-        0.7s
-        ease;
-}
-
-
-.success-message {
-    font-size: 18px;
-    opacity: 0.95;
-}
-
-
-.thank-you-box {
-    max-width: 500px;
-
-    margin: 22px auto;
-
-    padding: 17px;
-
-    border-radius: 14px;
-
-    background:
-        rgba(255,255,255,0.09);
-
-    font-size: 17px;
-}
-
-
-.party-emojis {
-    font-size: 35px;
-
-    letter-spacing: 8px;
-
-    animation:
-        partyBounce
-        0.8s
-        infinite
-        alternate;
-}
-
-
-/* SUCCESS ANIMATIONS */
-
-@keyframes successPop {
-
-    0% {
-        transform: scale(0);
-    }
-
-    70% {
-        transform: scale(1.2);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-
-}
-
-
-@keyframes confettiPop {
-
-    0% {
-        transform: scale(0) rotate(-30deg);
-    }
-
-    70% {
-        transform: scale(1.3) rotate(10deg);
-    }
-
-    100% {
-        transform: scale(1) rotate(0);
-    }
-
-}
-
-
-@keyframes successText {
-
-    from {
-        transform: translateY(15px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-
-}
-
-
-@keyframes partyBounce {
-
-    from {
-        transform: translateY(0);
-    }
-
-    to {
-        transform: translateY(-8px);
-    }
-
-}
-<script>
-    // Document Type change hone par Back side upload box dikhane ya chupane ke liye
-function checkDocType() {
-    const docType = document.getElementById("docType").value;
-    const backUploadDiv = document.getElementById("backUploadDiv");
-
-    if (docType === "[Aadhaar Redacted]") {
-        backUploadDiv.style.display = "block"; // Card ke liye front aur back dono chahiye
-    } else {
-        backUploadDiv.style.display = "none";
-    }
-    calculateTotal();
-}
-
-// Total price calculate karne ka function
-function calculateTotal() {
-    const printType = document.getElementById("printType").value;
-    const side = document.getElementById("side").value;
-    const copies = parseInt(document.getElementById("copies").value) || 1;
-
-    let basePrice = printType === "Color" ? 20 : 10;
-    
-    if (side === "Double") {
-        basePrice += 5; // Double side par ₹5 extra
-    }
-
-    let totalPrice = basePrice * copies;
-    document.getElementById("totalPrice").innerText = "₹" + totalPrice;
-}
-
-// PRINT NOW button click event
-document.getElementById("printBtn").addEventListener("click", async () => {
-    const fileFrontInput = document.getElementById("fileFront");
-    const fileBackInput = document.getElementById("fileBack");
-    const statusDiv = document.getElementById("status");
-    const statusBox = document.getElementById("printStatusBox");
-    const processingScreen = document.getElementById("processingScreen");
-    const successScreen = document.getElementById("successScreen");
-
-    if (fileFrontInput.files.length === 0) {
-        alert("❌ Kripya pehle Front file select karein!");
-        return;
-    }
-
-    // Status box dikhayein aur processing screen shuru karein
-    statusBox.style.display = "block";
-    processingScreen.style.display = "block";
-    successScreen.style.display = "none";
-
-    const formData = new FormData();
-    formData.append("fileFront", fileFrontInput.files[0]);
-    
-    if (fileBackInput.files.length > 0) {
-        formData.append("fileBack", fileBackInput.files[0]);
-    }
-
-    formData.append("docType", document.getElementById("docType").value);
-    formData.append("printType", document.getElementById("printType").value);
-    formData.append("paperSize", document.getElementById("paperSize").value);
-    formData.append("side", document.getElementById("side").value);
-    formData.append("copies", document.getElementById("copies").value);
-    formData.append("shopId", "default_shop"); // Apni zaroorat ke hisaab se shopId badal sakte hain
-
-    try {
-        const response = await fetch("/upload", {
-            method: "POST",
-            body: formData
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-            // Thoda sa delay dekar success screen dikhayein taaki animation acchi lage
-            setTimeout(() => {
-                processingScreen.style.display = "none";
-                successScreen.style.display = "block";
-            }, 1500);
-        } else {
-            processingScreen.style.display = "none";
-            statusBox.style.display = "none";
-            alert("❌ Print error: " + result.message);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rohit Auto Print Hub</title>
+
+    <!-- ============================= -->
+    <!-- LOADER & UI CSS -->
+    <!-- ============================= -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 20px;
         }
-    } catch (error) {
-        console.error(error);
-        processingScreen.style.display = "none";
-        statusBox.style.display = "none";
-        alert("❌ Server se connect karne me samasya aayi!");
-    }
-});
-</script>
-    
-</style>
 
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            color: #071952;
+            margin-bottom: 5px;
+        }
+
+        .option, .upload-box {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .option label, .upload-box h3 {
+            display: block;
+            margin-bottom: 8px;
+            color: #071952;
+            font-weight: bold;
+        }
+
+        .option select, .option input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button#printBtn {
+            display: block;
+            width: 100%;
+            max-width: 530px;
+            margin: 20px auto;
+            padding: 15px;
+            background: #0B666A;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(11, 102, 106, 0.3);
+        }
+
+        button#printBtn:hover {
+            background: #071952;
+        }
+
+        .print-status-box {
+            display: none;
+            width: 100%;
+            max-width: 530px;
+            box-sizing: border-box;
+            margin: 25px auto;
+            padding: 35px 20px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #071952, #172554);
+            color: white;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.20);
+        }
+
+        #processingScreen h2 {
+            font-size: 30px;
+            margin: 5px 0 10px;
+        }
+
+        .processing-subtitle {
+            font-size: 16px;
+            opacity: 0.85;
+        }
+
+        .game-loader {
+            position: relative;
+            width: 170px;
+            height: 170px;
+            margin: 30px auto;
+        }
+
+        .loader-ring {
+            position: absolute;
+            width: 145px;
+            height: 145px;
+            top: 12px;
+            left: 12px;
+            border-radius: 50%;
+            border: 8px solid rgba(255,255,255,0.12);
+            border-top-color: #00e5ff;
+            border-right-color: #7c3aed;
+            animation: loaderRotate 1.1s linear infinite;
+            box-shadow: 0 0 25px rgba(0,229,255,0.4);
+        }
+
+        .loader-ball {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            animation: ballMove 1.5s linear infinite;
+        }
+
+        .ball1 { background: #00e5ff; }
+        .ball2 { background: #a855f7; animation-delay: 0.5s; }
+        .ball3 { background: #22c55e; animation-delay: 1s; }
+
+        .loader-printer {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            left: 50px;
+            top: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 38px;
+            background: rgba(255,255,255,0.10);
+            animation: printerPulse 1s ease-in-out infinite;
+        }
+
+        .processing-message {
+            display: inline-block;
+            padding: 13px 25px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.10);
+            font-size: 18px;
+        }
+
+        @keyframes loaderRotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes printerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @keyframes ballMove {
+            0% { transform: rotate(0deg) translateX(70px); }
+            100% { transform: rotate(360deg) translateX(70px); }
+        }
+
+        #successScreen {
+            display: none;
+        }
+
+        .success-animation {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 15px;
+        }
+
+        .success-circle {
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 65px;
+            font-weight: bold;
+            background: #22c55e;
+            box-shadow: 0 0 35px rgba(34,197,94,0.7);
+            animation: successPop 0.6s ease;
+        }
+
+        .success-confetti {
+            position: absolute;
+            right: -5px;
+            top: -10px;
+            font-size: 42px;
+            animation: confettiPop 0.8s ease;
+        }
+
+        .success-title {
+            font-size: 38px;
+            margin: 10px 0;
+            color: #4ade80;
+            animation: successText 0.7s ease;
+        }
+
+        .success-message {
+            font-size: 18px;
+            opacity: 0.95;
+        }
+
+        .thank-you-box {
+            max-width: 500px;
+            margin: 22px auto;
+            padding: 17px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.09);
+            font-size: 17px;
+        }
+
+        .party-emojis {
+            font-size: 35px;
+            letter-spacing: 8px;
+            animation: partyBounce 0.8s infinite alternate;
+        }
+
+        @keyframes successPop {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes confettiPop {
+            0% { transform: scale(0) rotate(-30deg); }
+            70% { transform: scale(1.3) rotate(10deg); }
+            100% { transform: scale(1) rotate(0); }
+        }
+
+        @keyframes successText {
+            from { transform: translateY(15px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes partyBounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-8px); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="logo">
+        <h1>🖨️ Rohit Auto Print Hub</h1>
+        <p>Fast • Easy • Automatic Printing</p>
+    </div>
+
+    <!-- Document Type Dropdown -->
+    <div class="option">
+        <label>Document Type</label>
+        <select id="docType" onchange="checkDocType()">
+            <option value="Normal">📄 Full Page (Normal PDF/Photo)</option>
+            <option value="PAN">💳 PAN / Voter ID (Single Side Card)</option>
+            <option value="[Aadhaar Redacted]">🪪 Card (Front & Back)</option>
+        </select>
+    </div>
+
+    <div class="upload-box">
+        <h3>Select File (Front)</h3>
+        <input type="file" id="fileFront" accept=".pdf,.jpg,.jpeg,.png">
+
+        <div id="backUploadDiv" style="display: none; margin-top: 15px;">
+            <h3>Select File (Back)</h3>
+            <input type="file" id="fileBack" accept=".jpg,.jpeg,.png">
+        </div>
+    </div>
+
+    <!-- Print Type -->
+    <div class="option">
+        <label>Print Type</label>
+        <select id="printType" onchange="calculateTotal()">
+            <option value="Black">⚫ Black & White (₹10)</option>
+            <option value="Color">🌈 Color (₹20)</option>
+        </select>
+    </div>
+
+    <!-- Paper Size -->
+    <div class="option">
+        <label>Paper Size</label>
+        <select id="paperSize">
+            <option value="A4">A4</option>
+            <option value="A3">A3</option>
+        </select>
+    </div>
+
+    <!-- Print Side -->
+    <div class="option">
+        <label>Print Side</label>
+        <select id="side" onchange="calculateTotal()">
+            <option value="Single">Single Side</option>
+            <option value="Double">Double Side (+₹5)</option>
+        </select>
+    </div>
+
+    <!-- Copies -->
+    <div class="option">
+        <label>Copies</label>
+        <input type="number" id="copies" value="1" min="1" oninput="calculateTotal()">
+    </div>
+
+    <!-- Total Amount -->
+    <div class="option" style="background: #f0f4f8; padding: 12px; border-radius: 8px; text-align: center; max-width: 500px; margin: 0 auto 15px;">
+        <h3 style="color: #071952; margin-bottom: 5px;">Total Amount</h3>
+        <span id="totalPrice" style="font-size: 24px; font-weight: bold; color: #0B666A;">₹10</span>
+    </div>
+
+    <!-- PRINT BUTTON -->
+    <button id="printBtn">🖨️ PRINT NOW</button>
+
+    <!-- PRINT PROCESSING / SUCCESS BOX -->
+    <div id="printStatusBox" class="print-status-box">
+        <!-- PROCESSING SCREEN -->
+        <div id="processingScreen">
+            <h2>Preparing Your Print...</h2>
+            <p class="processing-subtitle">Please wait while your document is being sent to the printer.</p>
+            
+            <div class="game-loader">
+                <div class="loader-ring"></div>
+                <div class="loader-ball ball1"></div>
+                <div class="loader-ball ball2"></div>
+                <div class="loader-ball ball3"></div>
+                <div class="loader-printer">🖨️</div>
+            </div>
+
+            <div class="processing-message">🔄 Sending to printer...</div>
+        </div>
+
+        <!-- SUCCESS SCREEN -->
+        <div id="successScreen">
+            <div class="success-animation">
+                <div class="success-circle">✓</div>
+                <div class="success-confetti">🎉</div>
+            </div>
+            <h2 class="success-title">🎉 PRINT SUCCESS!</h2>
+            <p class="success-message">Your document has been sent to the printer successfully.</p>
+            <div class="thank-you-box">
+                🖨️ Thank you for using <strong>Rohit Auto Print Hub</strong>
+            </div>
+            <div class="party-emojis">🎊 🎉 🥳 🎉 🎊</div>
+        </div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <div class="footer">
+        Powered By Rohit Auto Hub
+    </div>
+
+    <!-- ============================= -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ============================= -->
+    <script>
+        function checkDocType() {
+            const docType = document.getElementById("docType").value;
+            const backUploadDiv = document.getElementById("backUploadDiv");
+
+            if (docType === "[Aadhaar Redacted]") {
+                backUploadDiv.style.display = "block";
+            } else {
+                backUploadDiv.style.display = "none";
+            }
+            calculateTotal();
+        }
+
+        function calculateTotal() {
+            const printType = document.getElementById("printType").value;
+            const side = document.getElementById("side").value;
+            const copies = parseInt(document.getElementById("copies").value) || 1;
+
+            let basePrice = printType === "Color" ? 20 : 10;
+            
+            if (side === "Double") {
+                basePrice += 5;
+            }
+
+            let totalPrice = basePrice * copies;
+            document.getElementById("totalPrice").innerText = "₹" + totalPrice;
+        }
+
+        document.getElementById("printBtn").addEventListener("click", async () => {
+            const fileFrontInput = document.getElementById("fileFront");
+            const fileBackInput = document.getElementById("fileBack");
+            const statusBox = document.getElementById("printStatusBox");
+            const processingScreen = document.getElementById("processingScreen");
+            const successScreen = document.getElementById("successScreen");
+
+            if (fileFrontInput.files.length === 0) {
+                alert("❌ Kripya pehle Front file select karein!");
+                return;
+            }
+
+            statusBox.style.display = "block";
+            processingScreen.style.display = "block";
+            successScreen.style.display = "none";
+
+            const formData = new FormData();
+            formData.append("fileFront", fileFrontInput.files[0]);
+            
+            if (fileBackInput.files.length > 0) {
+                formData.append("fileBack", fileBackInput.files[0]);
+            }
+
+            formData.append("docType", document.getElementById("docType").value);
+            formData.append("printType", document.getElementById("printType").value);
+            formData.append("paperSize", document.getElementById("paperSize").value);
+            formData.append("side", document.getElementById("side").value);
+            formData.append("copies", document.getElementById("copies").value);
+            formData.append("shopId", "default_shop");
+
+            try {
+                const response = await fetch("/upload", {
+                    method: "POST",
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    setTimeout(() => {
+                        processingScreen.style.display = "none";
+                        successScreen.style.display = "block";
+                    }, 1500);
+                } else {
+                    processingScreen.style.display = "none";
+                    statusBox.style.display = "none";
+                    alert("❌ Print error: " + result.message);
+                }
+            } catch (error) {
+                console.error(error);
+                processingScreen.style.display = "none";
+                statusBox.style.display = "none";
+                alert("❌ Server se connect karne me samasya aayi!");
+            }
+        });
+    </script>
+</body>
+</html>
